@@ -1,46 +1,50 @@
 repeat task.wait() until game:IsLoaded()
 
-local AutoClick = false
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
--- Serviço correto para simular clique
-local VirtualUser = game:GetService("VirtualUser")
+local AutoAttack = false
 
 -- GUI
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AutoClickGui"
+ScreenGui.Name = "AutoAttackGui"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = game.CoreGui
 
 local Button = Instance.new("TextButton")
 Button.Parent = ScreenGui
-Button.Size = UDim2.new(0, 170, 0, 50)
+Button.Size = UDim2.new(0, 180, 0, 50)
 Button.Position = UDim2.new(0, 20, 0, 200)
 Button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 Button.TextScaled = true
-Button.Text = "AUTO CLICK: OFF"
+Button.Text = "AUTO ATTACK: OFF"
 Button.BorderSizePixel = 0
 Button.Active = true
 Button.Draggable = true
 
 Button.MouseButton1Click:Connect(function()
-    AutoClick = not AutoClick
-    if AutoClick then
-        Button.Text = "AUTO CLICK: ON"
+    AutoAttack = not AutoAttack
+    if AutoAttack then
+        Button.Text = "AUTO ATTACK: ON"
         Button.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
     else
-        Button.Text = "AUTO CLICK: OFF"
+        Button.Text = "AUTO ATTACK: OFF"
         Button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     end
 end)
 
--- AUTO CLICK REAL
+-- AUTO ATTACK REAL
 task.spawn(function()
-    while task.wait(0.1) do
-        if AutoClick then
-            VirtualUser:Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-            task.wait(0.01)
-            VirtualUser:Button1Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+    while task.wait(0.15) do
+        if AutoAttack then
+            local character = LocalPlayer.Character
+            if character then
+                local tool = character:FindFirstChildOfClass("Tool")
+                if tool then
+                    tool:Activate()
+                end
+            end
         end
     end
 end)
